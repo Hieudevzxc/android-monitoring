@@ -103,10 +103,10 @@ RUN_CONFIG=false
 if [ "$1" = "--config" ]; then
     RUN_CONFIG=true
 elif [ "$1" = "--screen-on" ]; then
-    SCRCPY_OPTS+=("--power-off-on-close")
+    SCRCPY_OPTS+=("--power-off-on-close" "-m" "1280" "-b" "4M" "--max-fps" "60")
 else
-    # Default Quick Start
-    SCRCPY_OPTS+=("-S" "--power-off-on-close")
+    # Default Quick Start (Optimized for 60 FPS smoothness)
+    SCRCPY_OPTS+=("-S" "--power-off-on-close" "-m" "1280" "-b" "4M" "--max-fps" "60")
 fi
 
 if [ "$RUN_CONFIG" = true ]; then
