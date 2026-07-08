@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=scrcpy (console)
+GenericName=Android Remote Control
+Comment=Display and control your Android device
+Exec=/bin/sh -c "\$SHELL -i -c 'scrcpy --pause-on-exit=if-error'"
+Icon=scrcpy
+Terminal=true
+Type=Application
+Categories=Utility;RemoteAccess;
+StartupNotify=false
+NoDisplay=true

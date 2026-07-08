@@ -59,19 +59,22 @@ fi
 USER_HOME=$(eval echo ~$REAL_USER)
 USER_APP_DIR="$USER_HOME/.local/share/applications"
 
-echo "-> Creating desktop entry for user: $REAL_USER..."
-mkdir -p "$USER_APP_DIR"
-cp scrcpy.desktop "$USER_APP_DIR/scrcpy.desktop"
-chmod +x "$USER_APP_DIR/scrcpy.desktop"
-chown -R $REAL_USER:$REAL_USER "$USER_APP_DIR/scrcpy.desktop"
+echo "-> Installing system desktop entries..."
+cp scrcpy.desktop /usr/share/applications/scrcpy.desktop
+chmod 644 /usr/share/applications/scrcpy.desktop
+chown root:root /usr/share/applications/scrcpy.desktop
+
+cp scrcpy-console.desktop /usr/share/applications/scrcpy-console.desktop
+chmod 644 /usr/share/applications/scrcpy-console.desktop
+chown root:root /usr/share/applications/scrcpy-console.desktop
 
 # 5. Configure udev rules for UHID (physical keyboard simulation)
 echo "-> Configuring udev rules for UHID (physical keyboard)..."
 echo 'KERNEL=="uhid", MODE="0666"' > /etc/udev/rules.d/99-uhid.rules
 udevadm control --reload-rules && udevadm trigger
 
-# Refresh desktop database for the user
-sudo -u $REAL_USER update-desktop-database "$USER_APP_DIR" >/dev/null 2>&1
+# Refresh desktop database
+update-desktop-database /usr/share/applications >/dev/null 2>&1
 
 echo "============================================="
 echo " Installation Completed Successfully!"
