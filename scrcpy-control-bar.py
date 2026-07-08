@@ -22,6 +22,7 @@ class ControlBar(Gtk.Window):
         self.set_type_hint(Gdk.WindowTypeHint.UTILITY)
         self.set_decorated(False)
         self.set_resizable(False)
+        self.set_accept_focus(False)
         self.set_border_width(4)
         self.set_position(Gtk.WindowPosition.CENTER)
         

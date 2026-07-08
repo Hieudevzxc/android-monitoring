@@ -96,7 +96,7 @@ if [ "$NUM_DEVICES" -eq 0 ]; then
 fi
 
 # Define default options array
-SCRCPY_OPTS=("--window-title" "Android Mirroring" "--keyboard=uhid")
+SCRCPY_OPTS=("--window-title" "Android Mirroring")
 
 # Check arguments
 RUN_CONFIG=false
