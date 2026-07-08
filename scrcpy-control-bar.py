@@ -47,7 +47,7 @@ class ControlBar(Gtk.Window):
             ("view-grid-symbolic", 187, "Ứng dụng gần đây (Recents)"),
             ("audio-volume-low-symbolic", 25, "Giảm âm lượng"),
             ("audio-volume-high-symbolic", 24, "Tăng âm lượng"),
-            ("weather-clear-night-symbolic", "scrcpy_screen_off", "Tắt màn hình điện thoại (Giữ kết nối máy tính)"),
+            ("notification-new-symbolic", "expand_notifications", "Mở thanh thông báo (Notifications)"),
             ("system-shutdown-symbolic", 26, "Nguồn điện thoại (Power)"),
             ("network-wireless-symbolic", "wifi_setup", "Thiết lập kết nối Wi-Fi (Không dây)"),
         ]
@@ -135,8 +135,8 @@ class ControlBar(Gtk.Window):
     def on_action_clicked(self, button, keycode):
         if keycode == "wifi_setup":
             subprocess.Popen(["/usr/local/bin/scrcpy-launcher.sh", "--wifi-setup"])
-        elif keycode == "scrcpy_screen_off":
-            subprocess.Popen(["xdotool", "search", "--name", "^Android Mirroring$", "windowactivate", "--sync", "key", "alt+o"])
+        elif keycode == "expand_notifications":
+            subprocess.Popen(["adb", "-s", SERIAL, "shell", "cmd", "statusbar", "expand-notifications"])
         else:
             subprocess.Popen(["adb", "-s", SERIAL, "shell", "input", "keyevent", str(keycode)])
         
