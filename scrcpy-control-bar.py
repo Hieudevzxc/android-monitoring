@@ -136,7 +136,7 @@ class ControlBar(Gtk.Window):
         if keycode == "wifi_setup":
             subprocess.Popen(["/usr/local/bin/scrcpy-launcher.sh", "--wifi-setup"])
         elif keycode == "scrcpy_screen_off":
-            subprocess.Popen(["xdotool", "search", "--name", "^Android Mirroring$", "key", "Alt+o"])
+            subprocess.Popen(["xdotool", "search", "--name", "^Android Mirroring$", "windowactivate", "--sync", "key", "alt+o"])
         else:
             subprocess.Popen(["adb", "-s", SERIAL, "shell", "input", "keyevent", str(keycode)])
         
