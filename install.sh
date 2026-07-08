@@ -59,14 +59,15 @@ fi
 USER_HOME=$(eval echo ~$REAL_USER)
 USER_APP_DIR="$USER_HOME/.local/share/applications"
 
-echo "-> Installing system desktop entries..."
-cp scrcpy.desktop /usr/share/applications/scrcpy.desktop
-chmod 644 /usr/share/applications/scrcpy.desktop
-chown root:root /usr/share/applications/scrcpy.desktop
+echo "-> Installing system desktop entry..."
+# Remove default package desktop files to prevent duplicate icons and naming conflicts
+rm -f /usr/share/applications/scrcpy.desktop
+rm -f /usr/share/applications/scrcpy-console.desktop
 
-cp scrcpy-console.desktop /usr/share/applications/scrcpy-console.desktop
-chmod 644 /usr/share/applications/scrcpy-console.desktop
-chown root:root /usr/share/applications/scrcpy-console.desktop
+# Copy custom launcher desktop file
+cp scrcpy-launcher.desktop /usr/share/applications/scrcpy-launcher.desktop
+chmod 644 /usr/share/applications/scrcpy-launcher.desktop
+chown root:root /usr/share/applications/scrcpy-launcher.desktop
 
 # 5. Configure udev rules for UHID (physical keyboard simulation)
 echo "-> Configuring udev rules for UHID (physical keyboard)..."
