@@ -1,0 +1,23 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Android Mirroring
+Name[vi]=Điều khiển Android
+Comment=Control and mirror your Android phone
+Comment[vi]=Điều khiển và truyền màn hình điện thoại Android
+Exec=/usr/local/bin/scrcpy-launcher.sh
+Icon=phone
+Terminal=false
+Categories=Utility;
+Keywords=phone;mirroring;scrcpy;android;screen;
+Actions=Config;ScreenOn;
+
+[Desktop Action Config]
+Name=Cấu hình tùy chọn...
+Name[vi]=Cấu hình tùy chọn...
+Exec=/usr/local/bin/scrcpy-launcher.sh --config
+
+[Desktop Action ScreenOn]
+Name=Khởi động giữ màn hình BẬT
+Name[vi]=Khởi động giữ màn hình BẬT
+Exec=/usr/local/bin/scrcpy-launcher.sh --screen-on
