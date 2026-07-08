@@ -45,6 +45,10 @@ chmod +x /usr/local/bin/scrcpy-launcher.sh
 cp scrcpy-control-bar.py /usr/local/bin/scrcpy-control-bar.py
 chmod +x /usr/local/bin/scrcpy-control-bar.py
 
+echo "-> Installing custom app icon..."
+mkdir -p /usr/local/share/android-monitoring
+cp icon.jpg /usr/local/share/android-monitoring/icon.jpg
+
 # 4. Configure desktop entry for showapps (GNOME)
 # Identify the original user (non-root) running sudo
 REAL_USER=$SUDO_USER
@@ -60,6 +64,11 @@ mkdir -p "$USER_APP_DIR"
 cp scrcpy-launcher.desktop "$USER_APP_DIR/scrcpy-launcher.desktop"
 chmod +x "$USER_APP_DIR/scrcpy-launcher.desktop"
 chown -R $REAL_USER:$REAL_USER "$USER_APP_DIR/scrcpy-launcher.desktop"
+
+# 5. Configure udev rules for UHID (physical keyboard simulation)
+echo "-> Configuring udev rules for UHID (physical keyboard)..."
+echo 'KERNEL=="uhid", MODE="0666"' > /etc/udev/rules.d/99-uhid.rules
+udevadm control --reload-rules && udevadm trigger
 
 # Refresh desktop database for the user
 sudo -u $REAL_USER update-desktop-database "$USER_APP_DIR" >/dev/null 2>&1
