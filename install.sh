@@ -61,9 +61,9 @@ USER_APP_DIR="$USER_HOME/.local/share/applications"
 
 echo "-> Creating desktop entry for user: $REAL_USER..."
 mkdir -p "$USER_APP_DIR"
-cp scrcpy-launcher.desktop "$USER_APP_DIR/scrcpy-launcher.desktop"
-chmod +x "$USER_APP_DIR/scrcpy-launcher.desktop"
-chown -R $REAL_USER:$REAL_USER "$USER_APP_DIR/scrcpy-launcher.desktop"
+cp scrcpy.desktop "$USER_APP_DIR/scrcpy.desktop"
+chmod +x "$USER_APP_DIR/scrcpy.desktop"
+chown -R $REAL_USER:$REAL_USER "$USER_APP_DIR/scrcpy.desktop"
 
 # 5. Configure udev rules for UHID (physical keyboard simulation)
 echo "-> Configuring udev rules for UHID (physical keyboard)..."

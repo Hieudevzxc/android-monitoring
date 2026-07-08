@@ -9,6 +9,7 @@ Exec=/usr/local/bin/scrcpy-launcher.sh
 Icon=/usr/local/share/android-monitoring/icon.jpg
 Terminal=false
 Categories=Utility;
+StartupWMClass=scrcpy
 Keywords=phone;mirroring;scrcpy;android;screen;
 Actions=Config;ScreenOn;WifiSetup;
 
