@@ -10,7 +10,7 @@ Icon=phone
 Terminal=false
 Categories=Utility;
 Keywords=phone;mirroring;scrcpy;android;screen;
-Actions=Config;ScreenOn;
+Actions=Config;ScreenOn;WifiSetup;
 
 [Desktop Action Config]
 Name=Cấu hình tùy chọn...
@@ -21,3 +21,8 @@ Exec=/usr/local/bin/scrcpy-launcher.sh --config
 Name=Khởi động giữ màn hình BẬT
 Name[vi]=Khởi động giữ màn hình BẬT
 Exec=/usr/local/bin/scrcpy-launcher.sh --screen-on
+
+[Desktop Action WifiSetup]
+Name=Thiết lập kết nối Wi-Fi (Không dây)...
+Name[vi]=Thiết lập kết nối Wi-Fi (Không dây)...
+Exec=/usr/local/bin/scrcpy-launcher.sh --wifi-setup

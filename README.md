@@ -47,11 +47,24 @@ Before starting, you must enable **USB Debugging** on your phone:
 6. Connect your phone to your computer via USB.
 7. Unlock your phone; a prompt asking to allow USB Debugging will appear. Check **"Always allow from this computer"** and tap **Allow**.
 
-## Usage
+## Usage & Connections
 
-1. Connect your phone to your computer via USB.
-2. Click **Show Applications** in GNOME (or press the `Super`/`Windows` key) and search for **"Android Mirroring"** (or **"Điều khiển Android"**).
-3. Click the icon to start the quick connection, or right-click to access advanced options.
+### 1. Wired Connection (USB)
+1. Connect your phone to your computer via a USB cable.
+2. Open **Show Applications** in GNOME (or press the `Super`/`Windows` key) and search for **"Android Mirroring"** (or **"Điều khiển Android"**).
+3. Left-click the icon to start mirroring instantly with default options, or right-click the icon to adjust configuration settings.
+
+### 2. Wireless Connection (Wi-Fi)
+To use the application wirelessly over Wi-Fi (no USB cable needed after initial setup):
+1. **Initial Setup (Must do once)**:
+   - Connect your phone to the computer via USB cable.
+   - Right-click the **"Android Mirroring"** icon in GNOME Applications and select **"Thiết lập kết nối Wi-Fi (Không dây)..."** (Wireless Wi-Fi Setup).
+   - Follow the onscreen prompt. The script will automatically configure TCP/IP mode on your phone, retrieve its IP address, establish the connection, and save it.
+2. **Subsequent Launches**:
+   - Make sure both your phone and computer are connected to the **same Wi-Fi network**.
+   - Simply left-click the **"Android Mirroring"** icon (no USB cable needed).
+   - The launcher will automatically detect the last connected Wi-Fi IP address and try to connect wirelessly in the background. If successful, mirroring starts immediately.
+   - *Note: If the connection fails (e.g., if the phone's IP address changes due to a network reset), connect the USB cable and run the Wi-Fi setup again to update the saved IP.*
 
 ## Handy Keyboard Shortcuts
 When the mirroring window is focused, you can also use these standard shortcuts (using the `Alt` key as the default control key):

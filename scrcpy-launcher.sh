@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Configuration directories for caching last connected Wi-Fi IP
+CONFIG_DIR="$HOME/.config/scrcpy-launcher"
+WIFI_IP_FILE="$CONFIG_DIR/last_wifi_ip.txt"
+
 # Start adb server to ensure it is running and detect devices
 adb start-server >/dev/null 2>&1
 
@@ -11,6 +15,79 @@ if [ -z "$DEVICES_OUT" ]; then
     NUM_DEVICES=0
 else
     NUM_DEVICES=$(echo "$DEVICES_OUT" | wc -l)
+fi
+
+# Auto-connect if no devices found but we have a saved WiFi IP and not running setup
+if [ "$NUM_DEVICES" -eq 0 ] && [ -f "$WIFI_IP_FILE" ] && [ "$1" != "--wifi-setup" ]; then
+    LAST_IP=$(cat "$WIFI_IP_FILE")
+    # Show user a passive notification that we are trying to connect
+    zenity --notification --text="Đang kết nối không dây tới điện thoại ($LAST_IP)..." --timeout=2 >/dev/null 2>&1 &
+    
+    # Try to connect via adb
+    adb connect "$LAST_IP:5555" >/dev/null 2>&1
+    
+    # Re-evaluate device list
+    DEVICES_OUT=$(adb devices | tail -n +2 | grep -v '^$')
+    if [ -z "$DEVICES_OUT" ]; then
+        NUM_DEVICES=0
+    else
+        NUM_DEVICES=$(echo "$DEVICES_OUT" | wc -l)
+    fi
+fi
+
+# Wi-Fi wireless setup action
+if [ "$1" = "--wifi-setup" ]; then
+    # 1. Check if any USB device is connected (must be connected via USB first to authorize and enable tcpip)
+    # Check if there is a device that is not an IP address (contains no ':')
+    USB_DEV=$(echo "$DEVICES_OUT" | grep -v ':' | awk '{print $1}' | head -n 1)
+    USB_STATUS=$(echo "$DEVICES_OUT" | grep -v ':' | awk '{print $2}' | head -n 1)
+    
+    if [ -z "$USB_DEV" ]; then
+        zenity --error --title="Thiết lập Wi-Fi" --text="<b>Không tìm thấy thiết bị USB nào!</b>\n\nĐể thiết lập kết nối không dây (Wi-Fi), bạn cần cắm cáp USB nối điện thoại với máy tính trước (chỉ thực hiện một lần)." --width=450
+        exit 1
+    fi
+    
+    if [ "$USB_STATUS" = "unauthorized" ]; then
+        zenity --warning --title="Thiết lập Wi-Fi" --text="<b>Thiết bị chưa được ủy quyền!</b>\n\nVui lòng nhấn cho phép USB Debugging trên màn hình điện thoại trước." --width=450
+        exit 1
+    fi
+    
+    # 2. Start TCP/IP mode on port 5555
+    zenity --info --title="Thiết lập Wi-Fi" --text="Đang chuẩn bị thiết lập kết nối không dây trên điện thoại của bạn...\nVui lòng giữ cáp kết nối." --width=400 --timeout=3 &
+    
+    adb -s "$USB_DEV" tcpip 5555 >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        zenity --error --title="Thiết lập Wi-Fi" --text="Không thể chuyển thiết bị sang chế độ kết nối mạng (TCP/IP). Vui lòng thử lại."
+        exit 1
+    fi
+    
+    # 3. Get IP Address
+    IP_ADDR=$(adb -s "$USB_DEV" shell ip addr show wlan0 2>/dev/null | grep "inet " | awk '{print $2}' | cut -d/ -f1 | head -n 1)
+    if [ -z "$IP_ADDR" ]; then
+        # Fallback
+        IP_ADDR=$(adb -s "$USB_DEV" shell ip route | grep src | awk '{print $9}' | head -n 1)
+    fi
+    
+    if [ -z "$IP_ADDR" ]; then
+        zenity --error --title="Thiết lập Wi-Fi" --text="Không thể lấy địa chỉ IP của điện thoại. Đảm bảo điện thoại và máy tính của bạn đang kết nối chung một mạng Wi-Fi." --width=450
+        exit 1
+    fi
+    
+    # 4. Connect to IP
+    adb connect "$IP_ADDR:5555" >/dev/null 2>&1
+    
+    # Verify connection
+    CONN_CHECK=$(adb devices | grep "$IP_ADDR:5555" | grep "device")
+    if [ -n "$CONN_CHECK" ]; then
+        # Save IP to file
+        mkdir -p "$CONFIG_DIR"
+        echo "$IP_ADDR" > "$WIFI_IP_FILE"
+        
+        zenity --info --title="Thiết lập Wi-Fi" --text="<b>Thiết lập kết nối Wi-Fi thành công!</b>\n\n- Địa chỉ IP điện thoại: <b>$IP_ADDR</b>\n\nBạn có thể <b>RÚT CÁP USB</b> ra ngay bây giờ. Hãy mở lại ứng dụng 'Điều khiển Android' để sử dụng không dây." --width=450
+    else
+        zenity --error --title="Thiết lập Wi-Fi" --text="Không thể kết nối đến điện thoại qua Wi-Fi.\nĐảm bảo cả máy tính và điện thoại đều đang kết nối vào <b>cùng một mạng Wi-Fi</b> và thử lại." --width=450
+    fi
+    exit 0
 fi
 
 if [ "$NUM_DEVICES" -eq 0 ]; then
@@ -98,12 +175,7 @@ run_scrcpy_with_device() {
     rm -f "$TEMP_LOG"
 }
 
-# Check status of devices
-# adb devices output formats:
-# <serial>   device
-# <serial>   unauthorized
-# <serial>   offline
-
+# Check status of devices and execute
 if [ "$NUM_DEVICES" -eq 1 ]; then
     SERIAL=$(echo "$DEVICES_OUT" | awk '{print $1}')
     STATUS=$(echo "$DEVICES_OUT" | awk '{print $2}')
