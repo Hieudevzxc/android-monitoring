@@ -49,6 +49,7 @@ class ControlBar(Gtk.Window):
             ("audio-volume-high-symbolic", 24, "Tăng âm lượng"),
             ("weather-clear-night-symbolic", 223, "Tắt màn hình điện thoại (Sleep)"),
             ("system-shutdown-symbolic", 26, "Nguồn điện thoại (Power)"),
+            ("network-wireless-symbolic", "wifi_setup", "Thiết lập kết nối Wi-Fi (Không dây)"),
         ]
         
         for icon_name, keycode, tooltip in buttons:
@@ -132,7 +133,10 @@ class ControlBar(Gtk.Window):
         return False
         
     def on_action_clicked(self, button, keycode):
-        subprocess.Popen(["adb", "-s", SERIAL, "shell", "input", "keyevent", str(keycode)])
+        if keycode == "wifi_setup":
+            subprocess.Popen(["/usr/local/bin/scrcpy-launcher.sh", "--wifi-setup"])
+        else:
+            subprocess.Popen(["adb", "-s", SERIAL, "shell", "input", "keyevent", str(keycode)])
         
     def on_close_clicked(self, button):
         # Kill scrcpy and exit
